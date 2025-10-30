@@ -1,0 +1,193 @@
+/* ===== 全局重置样式 ===== */
+/* 重置所有元素的默认边距、内边距和盒模型 */
+* {
+    margin: 0;                    /* 清除默认外边距 */
+    padding: 0;                   /* 清除默认内边距 */
+    box-sizing: border-box;       /* 使用边框盒模型，包含边框和内边距在宽高计算内 */
+}
+
+/* ===== 页面主体样式 ===== */
+/* 设置页面整体布局和背景 */
+body {
+    font-family: 'Microsoft YaHei', Arial, sans-serif;  /* 设置字体族，优先使用微软雅黑 */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);  /* 设置渐变背景，从左上到右下 */
+    min-height: 100vh;            /* 最小高度为视窗高度，确保全屏覆盖 */
+    /* align-items: center;          垂直居中对齐 */
+    justify-content: center;      /* 水平居中对齐 */
+    overflow: hidden;             /* 隐藏溢出内容，防止滚动条出现 */
+}
+
+/* 网页头部 */
+header {
+    height: 150px;
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+}
+
+header .header-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+header .header-container .logo {
+    line-height: 30px;
+}
+
+header .header-container .nav-container {
+    /* background-color: blue; */
+    /* padding: 0 20px; */
+}
+
+header .header-container .nav-list {
+    line-height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header .header-container .nav-list li {
+    list-style: none;
+    align-items: center;
+    justify-content: center;
+    padding:0 25px;
+}
+
+header .header-container .nav-list li:hover {
+    background-color: #555;
+    color: #000;
+}
+
+
+header .header-container .nav-list a {
+    color: #fff;
+    font-size: 24px;
+    text-decoration: none;
+}
+
+header .header-container .time {
+    font-size: 22px;
+    line-height: 30px;
+}
+
+/* 状态栏 */
+header .status {
+    height: 50px;
+    line-height: 50px;
+    background-color: #555;
+    color: #fff;
+    font-size: 24px;
+}
+
+/* 网页主体内容 */
+main {
+    
+}
+
+/* 网页底部 */
+footer {
+    height: 100px;
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+}
+
+/* 2. 网页的底部 */
+.footer {
+  height: 580px;
+  background-color: #F5F5F5;
+}
+
+.slogan {
+  height: 178px;
+  border-bottom: 1px solid #E8E8E8 ;
+}
+
+.slogan ul {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 178px;
+  font-size: 28px;
+  color: #333;
+}
+
+.slogan ul li {
+  display: flex;
+  align-items: center;
+}
+
+.slogan .sprite {
+  height: 58px;
+  width: 58px;
+  overflow: hidden;
+  margin-right: 20px;
+}
+.slogan .sprite1 {
+  background: url(../images/sprite.png) no-repeat;
+}
+
+.slogan .sprite2 {
+  background: url(../images/sprite.png) no-repeat 0 -58px;
+}
+
+.slogan .sprite3 {
+  background: url(../images/sprite.png) no-repeat 0 -116px;
+}
+
+.slogan .sprite4 {
+  background: url(../images/sprite.png) no-repeat 0 -174px;
+}
+
+/* 服务模块 */
+.service {
+  margin-top: 60px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.service-item {
+  display: flex;
+  align-items: center;
+}
+
+.service-item dt {
+  font-size: 18px;
+  color: #333333;
+  margin-bottom: 30px;
+  margin-right: 84px;
+}
+
+.service-item dd,
+.service-item dd a {
+  font-size: 16px;
+  color: #969696;
+  height: 32px;
+  line-height: 32px;
+}
+
+.service-item i {
+  color: #5EB69C;
+  margin-left: 5px;
+}
+
+.copyright {
+  height: 60px;
+  line-height: 30px;
+  width: 661px;
+  margin-top: 100px;
+}
+
+.copyright p {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  color: #A1A1A1;
+  
+}
+
+.copyright p a {
+  font-size: 16px;
+  color: #A1A1A1;
+}

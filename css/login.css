@@ -1,0 +1,109 @@
+/* ===== 全局重置样式 ===== */
+/* 重置所有元素的默认边距、内边距和盒模型 */
+* {
+    margin: 0;                    /* 清除默认外边距 */
+    padding: 0;                   /* 清除默认内边距 */
+    box-sizing: border-box;       /* 使用边框盒模型，包含边框和内边距在宽高计算内 */
+}
+
+/* ===== 页面主体样式 ===== */
+/* 设置页面整体布局和背景 */
+body {
+    font-family: 'Microsoft YaHei', Arial, sans-serif;  /* 设置字体族，优先使用微软雅黑 */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);  /* 设置渐变背景，从左上到右下 */
+    min-height: 100vh;            /* 最小高度为视窗高度，确保全屏覆盖 */
+    display: flex;                /* 使用弹性布局 */
+    align-items: center;          /* 垂直居中对齐 */
+    justify-content: center;      /* 水平居中对齐 */
+}
+
+/* ===== 登录容器样式 ===== */
+/* 登录表单的主容器，包含白色背景和阴影效果 */
+.login-container {
+    background: white;            /* 设置白色背景 */
+    padding: 40px;               /* 设置内边距为40px */
+    border-radius: 15px;         /* 设置圆角半径为15px */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);  /* 添加阴影效果，营造悬浮感 */
+    width: 100%;                 /* 宽度占满父容器 */
+    max-width: 400px;            /* 最大宽度限制为400px */
+    text-align: center;          /* 文本居中对齐 */
+}
+
+/* ===== 登录标题样式 ===== */
+/* 页面主标题的样式设置 */
+.login-title {
+    color: #333;                 /* 设置深灰色文字 */
+    margin-bottom: 30px;         /* 底部外边距30px */
+    font-size: 28px;             /* 字体大小28px */
+    font-weight: 300;            /* 字体粗细为细体 */
+}
+
+/* ===== 表单组样式 ===== */
+/* 每个输入字段的容器样式 */
+.form-group {
+    margin-bottom: 20px;         /* 底部外边距20px，用于分隔各个输入组 */
+    text-align: left;            /* 文本左对齐 */
+}
+
+/* ===== 表单标签样式 ===== */
+/* 输入字段的标签样式 */
+.form-group label {
+    display: block;              /* 块级显示，独占一行 */
+    margin-bottom: 8px;          /* 底部外边距8px */
+    color: #555;                 /* 设置中等灰色 */
+    font-weight: 500;            /* 字体粗细为中等 */
+}
+
+/* ===== 输入框样式 ===== */
+/* 用户名和密码输入框的样式 */
+.form-group input {
+    width: 100%;                 /* 宽度占满父容器 */
+    padding: 12px 15px;          /* 内边距：上下12px，左右15px */
+    border: 2px solid #e1e1e1;   /* 设置2px的浅灰色边框 */
+    border-radius: 8px;          /* 设置圆角半径8px */
+    font-size: 16px;             /* 字体大小16px */
+    transition: border-color 0.3s ease;  /* 边框颜色变化的过渡效果，持续0.3秒 */
+}
+
+/* ===== 输入框焦点状态样式 ===== */
+/* 当输入框获得焦点时的样式 */
+.form-group input:focus {
+    outline: none;               /* 移除默认的焦点轮廓 */
+    border-color: #667eea;       /* 改变边框颜色为主题蓝色 */
+}
+
+/* ===== 登录按钮样式 ===== */
+/* 登录提交按钮的样式设置 */
+.login-btn {
+    width: 100%;                 /* 宽度占满父容器 */
+    padding: 12px;               /* 内边距12px */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);  /* 渐变背景 */
+    color: white;                /* 白色文字 */
+    border: none;                /* 移除边框 */
+    border-radius: 8px;          /* 设置圆角半径8px */
+    font-size: 16px;             /* 字体大小16px */
+    font-weight: 500;            /* 字体粗细为中等 */
+    cursor: pointer;             /* 鼠标悬停时显示手型光标 */
+    transition: transform 0.2s ease;  /* 变换效果的过渡动画 */
+}
+
+/* ===== 登录按钮悬停状态样式 ===== */
+/* 鼠标悬停在登录按钮上时的效果 */
+.login-btn:hover {
+    transform: translateY(-2px); /* 向上移动2px，营造悬浮效果 */
+}
+
+/* ===== 登录按钮激活状态样式 ===== */
+/* 按钮被点击时的效果 */
+.login-btn:active {
+    transform: translateY(0);    /* 恢复原位置 */
+}
+
+/* ===== 错误信息样式 ===== */
+/* 登录失败时显示的错误信息样式 */
+.error-message {
+    color: #e74c3c;              /* 设置红色文字 */
+    margin-top: 10px;            /* 顶部外边距10px */
+    font-size: 14px;             /* 字体大小14px */
+    display: none;               /* 默认隐藏，通过JavaScript控制显示 */
+}

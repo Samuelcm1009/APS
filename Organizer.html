@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录成功</title>
+    <!-- 引用外部CSS样式文件 -->
+    <link rel="stylesheet" href="./css/base.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/organizer.css">
+
+
+        <!-- 引用外部JavaScript文件 -->
+    <script src="./js/time.js"></script>
+    <script src="./js/dataManager.js"></script>
+    <script src="./js/modal.js"></script>
+
+    <!-- 引用icon文件 -->
+    <link rel="stylesheet" href="./iconfont/iconfont.css">
+
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <h1>test-CCS</h1>
+                <h2>Cell Control System</h2>
+            </div>
+            <div class="nav-container">
+                <ul class="nav-list">
+                    <li><a href="Organizer.html">Organizer</a></li>
+                    <li><a href="Controller.html">Controller</a></li>
+                    <li><a href="ToDo.html">To&nbsp;Do</a></li>
+                    <li><a href="NCPrograms.html">NC&nbsp;programs</a></li>
+                    <li><a href="Tools.html">Tools</a></li>
+                    <li><a href="Recorder.html">Recorder</a></li>
+                    <li><a href="Service.html">Service</a></li>
+                    <li><a href="SetupStation.html">Setup&nbsp;Station</a></li>
+                    <li><a href="Notes.html">Notes</a></li>
+                    <li><a href="Logbook.html">Logbook</a></li>
+                    <li><a href="RemoteAccess.html">Remote&nbsp;Access</a></li>
+                    <li><a href="Documents.html">Documents</a></li>
+                </ul>
+            </div>
+            <div class="time">
+                <p>Company</p>
+                <!-- 显示实际时间 -->
+                <p id="currentTime"></p>
+            </div>
+        </div>
+        <div class="status">
+            <p><i class="icon icon-arrow-right-bold"></i>Organizer</p>
+        </div>
+    </header>
+
+
+  <!-- 网页主体内容 -->
+    <main>
+        <div class="production-table-container">
+            <table class="production-table">
+                <thead>
+                    <tr>
+                        <th class="col-checkbox" style="display: none;">
+                            <input type="checkbox" id="select-all-checkbox" style="display: none;">
+                        </th>
+                        <th class="col-priority">Priority</th>
+                        <th class="col-status">Status</th>
+                        <th class="col-order">Production order</th>
+                        <th class="col-part">Part type</th>
+                        <th class="col-progress">Order progress</th>
+                        <th class="col-pieces">Number of pieces finished / intended</th>
+                        <th class="col-delivery">Delivery date</th>
+                        <th class="col-schedule">Scheduled date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="checkbox-cell" style="display: none;">
+                            <input type="checkbox" class="row-checkbox">
+                        </td>
+                        <td>5</td>
+                        <td><span class="status-indicator status-green"></span></td>
+                        <td>
+                            <div class="order-info">
+                                <div class="order-number">FA_401001_R2017</div>
+                                <div class="order-company">Hüttinger AG</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="part-info">
+                                <div class="part-number">4_318220</div>
+                                <div class="part-name">Gehäuse</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 80%;"></div>
+                            </div>
+                        </td>
+                        <td>2 / 50</td>
+                        <td>
+                            <div class="delivery-date">26.09.2017</div>
+                        </td>
+                        <td>
+                            <div class="schedule-date">26.09.2018</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell" style="display: none;">
+                            <input type="checkbox" class="row-checkbox">
+                        </td>
+                        <td>10</td>
+                        <td><span class="status-indicator status-green"></span></td>
+                        <td>
+                            <div class="order-info">
+                                <div class="order-number">FA_401002_R2017</div>
+                                <div class="order-company">Trester AG</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="part-info">
+                                <div class="part-number">4_312000_WSG1</div>
+                                <div class="part-name">Keilstück WSG1</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%;"></div>
+                            </div>
+                        </td>
+                        <td>0 / 60</td>
+                        <td>
+                            <div class="delivery-date">04.10.2017</div>
+                            <div class="delivery-status overdue">OVERDUE</div>
+                        </td>
+                        <td>
+                            <div class="schedule-date">04.10.2018</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="checkbox-cell" style="display: none;">
+                            <input type="checkbox" class="row-checkbox">
+                        </td>
+                        <td>11</td>
+                        <td><span class="status-indicator status-green"></span></td>
+                        <td>
+                            <div class="order-info">
+                                <div class="order-number">FA_401003_R2016</div>
+                                <div class="order-company">Pestalozzi</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="part-info">
+                                <div class="part-number">4_313000_WSG2</div>
+                                <div class="part-name">Sperrblock WSG2</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 30%;"></div>
+                            </div>
+                        </td>
+                        <td>0 / 100</td>
+                        <td>
+                            <div class="delivery-date">02.10.2017</div>
+                        </td>
+                        <td>
+                            <div class="schedule-date">02.10.2018</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- 操作按钮区域 -->
+        <div class="action-buttons">
+            <button class="btn btn-move">修改订单</button>
+            <button class="btn btn-create">建立新生产订单</button>
+            <button class="btn btn-delete">删除生产订单</button>
+            <button class="btn btn-export">导出Excel</button>
+        </div>
+    </main>
+
+  <!-- 新建生产订单弹窗 -->
+    <div id="newOrderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>建立新生产订单</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="newOrderForm">
+                    <div class="form-group">
+                        <label for="priority">Priority:</label>
+                        <input type="number" id="priority" name="priority" min="1" max="9999" placeholder="9999">
+                        <span class="input-helper">输入优先级数字，新订单将插入到此位置前</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="productionOrder">Production order:</label>
+                        <input type="text" id="productionOrder" name="productionOrder" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="partType">Part type:</label>
+                        <input type="text" id="partType" name="partType" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productionCompany">生产公司:</label>
+                        <input type="text" id="productionCompany" name="productionCompany" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="plannedQuantity">计划产量:</label>
+                        <input type="number" id="plannedQuantity" name="plannedQuantity" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="currentQuantity">目前完成产量:</label>
+                        <input type="number" id="currentQuantity" name="currentQuantity" min="0" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                            <label for="deliveryDate">交货日期 *</label>
+                            <div class="enhanced-date-input">
+                                <input type="date" id="deliveryDate" name="deliveryDate" required 
+                                    class="date-input" placeholder="YYYY-MM-DD">
+                                <span class="date-helper">Please select a date</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="scheduledDate">计划日期 *</label>
+                            <div class="enhanced-date-input">
+                                <input type="date" id="scheduledDate" name="scheduledDate" required 
+                                    class="date-input" placeholder="YYYY-MM-DD">
+                                <span class="date-helper">Please select a date</span>
+                            </div>
+                        </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-cancel">取消</button>
+                        <button type="submit" class="btn btn-submit">确定</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+  <!-- 网页底部 -->
+    <footer class="footer">
+    <div class="slogan w">
+        <ul>
+        <li>
+            <h5 class="sprite sprite1"></h5>
+            <p>价格亲民</p>
+        </li>
+        <li>
+            <h5 class="sprite sprite2"></h5>
+            <p>物流快捷</p>
+        </li>
+        <li>
+            <h5 class="sprite sprite3"></h5>
+            <p>品质新鲜</p>
+        </li>
+        <li>
+            <h5 class="sprite sprite4"></h5>
+            <p>售后无忧</p>
+        </li>
+        </ul>
+    </div>
+    <div class="service w">
+        <div class="service-item">
+        <dl>
+            <dt>购物指南</dt>
+            <dd><a href="">购物流程</a></dd>
+            <dd><a href="">支付方式</a></dd>
+            <dd><a href="">售后规则</a></dd>
+        </dl>
+        <dl>
+            <dt>配送方式</dt>
+            <dd><a href="">配送运费</a></dd>
+            <dd><a href="">配送范围</a></dd>
+            <dd><a href="">配送时间</a></dd>
+        </dl>
+        <dl>
+            <dt>关于我们</dt>
+            <dd><a href="">平台规则</a></dd>
+            <dd><a href="">联系我们</a></dd>
+            <dd><a href="">问题反馈</a></dd>
+        </dl>
+        <dl>
+            <dt>售后服务</dt>
+            <dd><a href="">售后政策</a></dd>
+            <dd><a href="">退款说明</a></dd>
+            <dd><a href="">取消订单</a></dd>
+        </dl>
+        <dl>
+            <dt>服务热线</dt>
+            <dd><a href="">在线客服<i class="iconfont icon-customer-service"></i></a></dd>
+            <dd>客服电话&nbsp;400-000-000</dd>
+            <dd>工作时间&nbsp;周一至周日&nbsp;08:00-18:00</dd>
+        </dl>
+        </div>
+    </div>
+    <!-- 版权信息 -->
+    <div class="copyright w">
+        <p>
+        <a href="">关于我们</a> |
+        <a href="">帮助中心</a> |
+        <a href="">售后服务</a> |
+        <a href="">配送与验收</a> |
+        <a href="">商务合作</a> |
+        <a href="">搜索推荐</a> |
+        <a href="">友情链接</a> 
+        </p>
+        <p>Copyright&copy;</p>
+    </div>
+</div>
+  </footer>
+</body>
+</html>

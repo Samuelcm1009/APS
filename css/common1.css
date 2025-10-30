@@ -1,0 +1,242 @@
+/* 写公共的样式，如网页头部和底部 */
+
+.w {
+  width: 1240px;
+  margin: 0 auto;
+}
+
+/* 1. 网页的头部 */
+
+/* 1.1 快捷导航部分 */
+.shortcut {
+  height: 52px;
+  background-color: #333333;
+}
+
+.shortcut ul {
+  display: flex;
+  height: 52px;
+  /* 贴着主轴右侧 */
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.shortcut ul li a {
+  display: block;
+  height: 52px;
+  line-height: 52px;
+  padding: 0 10px;
+  color: #fff;
+}
+
+/* 修改第一个li中的a颜色 */
+.shortcut ul li:first-child a {
+  color: #5EB69C;
+}
+
+ul li.line {
+  height: 12px;
+  width: 1px;
+  margin: 0 15px;
+  background-color: #999;
+}
+
+.shortcut ul li a:hover {
+  color: #5EB69C;
+}
+
+/* 1.2 header部分制作 */
+.header {
+  display: flex;
+  justify-content: space-between;
+    align-items: center;
+  /* background-color: rgb(181, 204, 227); */
+  height: 132px;
+}
+
+.header .logo {
+  width: 200px;
+  height: 88px;
+  /* 垂直轴侧 */
+  margin-right: 41px;
+}
+
+.header .logo h1 {
+  width: 100%;
+  height: 100%;
+}
+
+.header .logo h1 a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* 背景图片填充 */
+  background: url(../images/logo.png);
+  /* 文字隐藏 */
+  text-indent: -9999px;
+  overflow: hidden;
+}
+
+.header .nav {
+  display: flex;
+  color: #333;
+  line-height: 22px;
+  gap: 48px;
+}
+
+.header .nav li a {
+  display: block;
+  height: 40px;
+  line-height: 40px;
+}
+
+.header .nav li a:hover {
+  color: #5EB69C;
+  border-bottom: 2px solid #5EB69C;
+}
+
+.search input {
+  width: 170px;
+  height: 40px;
+  padding-left: 28px;
+  border: 0;
+  font-size: 16px;
+  border-bottom: 2px solid #F4F4F4;
+}
+
+.search input::placeholder {
+  color: #ccc;
+  font-size: 16px;
+}
+
+.search input:hover {
+  border-bottom: 2px solid #5EB69C;
+  outline: 1px solid #5EB69C;
+}
+
+.search button {
+  width: 30px;
+  height: 40px;
+  float: left;
+}
+
+.cart i {
+  font-size: 40px;
+  margin-right: 15px;
+}
+
+.header .cart i:hover {
+  color: #5EB69C;
+  border-bottom: 2px solid #5EB69C;
+}
+/* 2. 网页的底部 */
+.footer {
+  height: 580px;
+  background-color: #F5F5F5;
+}
+
+.slogan {
+  height: 178px;
+  border-bottom: 1px solid #E8E8E8 ;
+}
+
+.slogan ul {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 178px;
+  font-size: 28px;
+  color: #333;
+}
+
+.slogan ul li {
+  display: flex;
+  align-items: center;
+}
+
+.slogan .sprite {
+  height: 58px;
+  width: 58px;
+  overflow: hidden;
+  margin-right: 20px;
+}
+.slogan .sprite1 {
+  background: url(../images/sprite.png) no-repeat;
+}
+
+.slogan .sprite2 {
+  background: url(../images/sprite.png) no-repeat 0 -58px;
+}
+
+.slogan .sprite3 {
+  background: url(../images/sprite.png) no-repeat 0 -116px;
+}
+
+.slogan .sprite4 {
+  background: url(../images/sprite.png) no-repeat 0 -174px;
+}
+
+/* 服务模块 */
+.service {
+  margin-top: 60px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.service-item {
+  display: flex;
+  align-items: center;
+}
+
+.service-item dt {
+  font-size: 18px;
+  color: #333333;
+  margin-bottom: 30px;
+  margin-right: 84px;
+}
+
+.service-item dd,
+.service-item dd a {
+  font-size: 16px;
+  color: #969696;
+  height: 32px;
+  line-height: 32px;
+}
+
+.service-item i {
+  color: #5EB69C;
+  margin-left: 5px;
+}
+
+
+.service .qrcode ul {
+  display: flex;
+  text-align: center;
+  gap: 55px;
+  color: #969696;
+}
+.service .qrcode ul li img {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 10px;
+}
+
+.copyright {
+  height: 60px;
+  line-height: 30px;
+  width: 661px;
+  margin-top: 100px;
+}
+
+.copyright p {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  color: #A1A1A1;
+  
+}
+
+.copyright p a {
+  font-size: 16px;
+  color: #A1A1A1;
+}
