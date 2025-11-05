@@ -34,8 +34,8 @@ class OrganizerTableData:
         """
         self.excel_file_path = excel_file_path
         self.columns = [
-            'Priority', 'Status', 'Production_order', 'Part_type', 
-            'Order_progress', 'Pieces_finished', 'Pieces_intended', 
+            'Priority', 'Status', 'Production_order', 'Part_type',
+            'Pieces_finished', 'Pieces_intended',
             'Delivery_date', 'Scheduled_date'
         ]
         
@@ -206,9 +206,7 @@ class OrganizerTableData:
             if col in df.columns:
                 df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
         
-        # 处理进度百分比
-        if 'Order_progress' in df.columns:
-            df['Order_progress'] = df['Order_progress'].astype(str)
+        # 不再保存进度列；若Excel中存在则读取但写出时会丢弃
         
         return df
     
@@ -367,11 +365,10 @@ def create_sample_data():
     """创建示例数据"""
     return [
         {
-            'Priority': 5,
+            'Priority': 50,
             'Status': 'Active',
             'Production_order': 'FA_401001_R2017',
             'Part_type': '4_318220',
-            'Order_progress': '80%',
             'Pieces_finished': 2,
             'Pieces_intended': 50,
             'Delivery_date': '2017-09-26',
@@ -382,7 +379,6 @@ def create_sample_data():
             'Status': 'Active',
             'Production_order': 'FA_401002_R2017',
             'Part_type': '4_312000_WSG1',
-            'Order_progress': '0%',
             'Pieces_finished': 0,
             'Pieces_intended': 60,
             'Delivery_date': '2017-10-04',
@@ -393,7 +389,6 @@ def create_sample_data():
             'Status': 'Active',
             'Production_order': 'FA_401003_R2016',
             'Part_type': '4_313000_WSG2',
-            'Order_progress': '30%',
             'Pieces_finished': 0,
             'Pieces_intended': 100,
             'Delivery_date': '2017-10-02',
@@ -439,7 +434,6 @@ if __name__ == "__main__":
         'Status': 'New',
         'Production_order': 'FA_401004_R2017',
         'Part_type': '4_314000_TEST',
-        'Order_progress': '0%',
         'Pieces_finished': 0,
         'Pieces_intended': 25,
         'Delivery_date': '2017-11-15',

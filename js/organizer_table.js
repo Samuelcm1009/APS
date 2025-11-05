@@ -27,20 +27,38 @@ function renderTable(orders) {
     tableBody.innerHTML = ''; // 清空现有数据
 
     orders.forEach(order => {
+        // 根据状态映射到颜色样式类
+        const statusText = (order.Status || '').toString();
+        const statusKey = statusText.trim().toLowerCase();
+        let statusClass = 'status-green';
+        if (['delayed', 'overdue', 'error', 'failed'].includes(statusKey)) {
+            statusClass = 'status-red';
+        } else if (['pending', 'new', 'waiting'].includes(statusKey)) {
+            statusClass = 'status-yellow';
+        } else if (['active', 'running', 'completed', 'done'].includes(statusKey)) {
+            statusClass = 'status-green';
+        }
+
+        // 通过前端计算订单进度
+        const finished = Number(order.Pieces_finished) || 0;
+        const intended = Number(order.Pieces_intended) || 0;
+        const progressPercent = intended > 0
+            ? Math.min(100, Math.max(0, Math.round((finished / intended) * 100)))
+            : 0;
+
         const row = document.createElement('tr');
         row.innerHTML = `
             <td class="col-checkbox"><input type="checkbox" class="row-checkbox"></td>
             <td>${order.Priority}</td>
-            <td><span class="status-indicator status-${order.Status.toLowerCase()}"></span> ${order.Status}</td>
+            <td><span class="status-indicator ${statusClass}"></span> ${statusText}</td>
             <td>${order.Production_order}</td>
             <td>${order.Part_type}</td>
             <td>
-                <div class="progress-bar-container">
-                    <div class="progress-bar" style="width: ${order.Order_progress};"></div>
-                    <span class="progress-text">${order.Pieces_finished}/${order.Pieces_intended}</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${progressPercent}%;"></div>
                 </div>
             </td>
-            <td>${order.Pieces_intended}</td>
+            <td>${finished} / ${intended}</td>
             <td>${order.Delivery_date}</td>
             <td>${order.Scheduled_date}</td>
         `;
