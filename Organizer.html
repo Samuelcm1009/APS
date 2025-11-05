@@ -12,8 +12,9 @@
 
         <!-- 引用外部JavaScript文件 -->
     <script src="./js/time.js"></script>
-    <script src="./js/dataManager.js"></script>
-    <script src="./js/modal.js"></script>
+    <script src="./js/organizer_table.js"></script>
+    <!-- <script src="./js/dataManager.js"></script> -->
+    <!-- <script src="./js/modal.js"></script> -->
 
     <!-- 引用icon文件 -->
     <link rel="stylesheet" href="./iconfont/iconfont.css">
@@ -61,8 +62,8 @@
             <table class="production-table">
                 <thead>
                     <tr>
-                        <th class="col-checkbox" style="display: none;">
-                            <input type="checkbox" id="select-all-checkbox" style="display: none;">
+                        <th class="col-checkbox">
+                            <input type="checkbox" id="selectAll" title="全选/取消全选">
                         </th>
                         <th class="col-priority">Priority</th>
                         <th class="col-status">Status</th>
@@ -76,8 +77,8 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="checkbox-cell" style="display: none;">
-                            <input type="checkbox" class="row-checkbox">
+                        <td class="col-checkbox">
+                            <input type="checkbox" class="row-checkbox" data-row="1">
                         </td>
                         <td>5</td>
                         <td><span class="status-indicator status-green"></span></td>
@@ -107,8 +108,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="checkbox-cell" style="display: none;">
-                            <input type="checkbox" class="row-checkbox">
+                        <td class="col-checkbox">
+                            <input type="checkbox" class="row-checkbox" data-row="2">
                         </td>
                         <td>10</td>
                         <td><span class="status-indicator status-green"></span></td>
@@ -139,8 +140,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="checkbox-cell" style="display: none;">
-                            <input type="checkbox" class="row-checkbox">
+                        <td class="col-checkbox">
+                            <input type="checkbox" class="row-checkbox" data-row="3">
                         </td>
                         <td>11</td>
                         <td><span class="status-indicator status-green"></span></td>

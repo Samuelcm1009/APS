@@ -41,10 +41,29 @@
 .production-table tbody tr {
     border-bottom: 1px solid #555555; /* 行间分隔线 */
     transition: background-color 0.2s ease; /* 悬停过渡效果 */
+    cursor: pointer; /* 整行可点击 */
 }
 
 .production-table tbody tr:hover {
     background-color: #454545; /* 悬停时的背景色 */
+}
+
+/* 选中行的样式 */
+.production-table tbody tr.row-selected {
+    background-color: #4a6a7a; /* 选中行的背景色 */
+    border-left: 4px solid #4CAF50; /* 选中行的左边框 */
+}
+
+.production-table tbody tr.row-selected:hover {
+    background-color: #5a7a8a; /* 选中行悬停时的背景色 */
+}
+
+/* 防止点击时选中文本 */
+.production-table tbody tr {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 /* 表格单元格样式 */
@@ -55,6 +74,23 @@
 }
 
 /* 列宽度设置 */
+.col-checkbox {
+    width: 3%;
+    text-align: center;
+}
+
+.col-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* 表头中的全选复选框样式 */
+.production-table th.col-checkbox input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
 .col-number {
     width: 5%;
     text-align: center;
