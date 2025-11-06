@@ -149,7 +149,101 @@ function getSelectedRows() {
     return selectedRows;
 }
 
+// 初始化“建立新生产订单”模态框交互与提交
+function initNewOrderModal() {
+    const modal = document.getElementById('newOrderModal');
+    const openBtn = document.querySelector('.btn.btn-create');
+    const closeBtn = modal ? modal.querySelector('.close') : null;
+    const cancelBtn = modal ? modal.querySelector('.btn-cancel') : null;
+    const form = document.getElementById('newOrderForm');
+
+    const showModal = () => {
+        if (modal) modal.style.display = 'block';
+    };
+
+    const hideModal = () => {
+        if (modal) modal.style.display = 'none';
+        if (form) form.reset();
+    };
+
+    if (openBtn) {
+        openBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showModal();
+        });
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', hideModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', hideModal);
+
+    // 点击模态框外区域关闭
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) hideModal();
+    });
+
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = form.querySelector('.btn-submit');
+            if (submitBtn) submitBtn.disabled = true;
+
+            // 获取表单值
+            const priority = Number(document.getElementById('priority')?.value) || 9999;
+            const productionOrder = document.getElementById('productionOrder')?.value?.trim() || '';
+            const partType = document.getElementById('partType')?.value?.trim() || '';
+            const plannedQuantity = Number(document.getElementById('plannedQuantity')?.value) || 0;
+            const currentQuantity = Number(document.getElementById('currentQuantity')?.value) || 0;
+            const deliveryDate = document.getElementById('deliveryDate')?.value || '';
+            const scheduledDate = document.getElementById('scheduledDate')?.value || '';
+
+            // 简单校验
+            if (!productionOrder || !partType || plannedQuantity <= 0) {
+                alert('请填写必填项，并确保计划件数大于 0');
+                if (submitBtn) submitBtn.disabled = false;
+                return;
+            }
+
+            // 组装后端期望的数据键
+            const orderData = {
+                Priority: priority,
+                Status: 'New',
+                Production_order: productionOrder,
+                Part_type: partType,
+                Pieces_finished: currentQuantity,
+                Pieces_intended: plannedQuantity,
+                Delivery_date: deliveryDate,
+                Scheduled_date: scheduledDate,
+            };
+
+            try {
+                const resp = await fetch('http://localhost:5000/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ data: orderData }),
+                });
+
+                const result = await resp.json().catch(() => ({}));
+                if (!resp.ok || result.success === false) {
+                    const msg = result.message || '创建订单失败';
+                    throw new Error(msg);
+                }
+
+                // 成功：关闭模态框并刷新表格
+                hideModal();
+                fetchAndDisplayOrders();
+            } catch (err) {
+                console.error('创建订单错误:', err);
+                alert(err.message || '网络错误或服务器异常');
+            } finally {
+                if (submitBtn) submitBtn.disabled = false;
+            }
+        });
+    }
+}
+
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
     fetchAndDisplayOrders();
+    initNewOrderModal();
 });

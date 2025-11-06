@@ -56,6 +56,9 @@ class OrganizerTableData:
             
             # 数据验证和清理
             df = self._validate_and_clean_data(df)
+
+            # 根据Priority排序并重排为连续的1..N（仅用于返回，不写回文件）
+            df = self._normalize_priority_df(df)
             
             # 转换为字典列表
             data = df.to_dict('records')
@@ -83,7 +86,13 @@ class OrganizerTableData:
             
             # 确保列顺序正确
             df = df.reindex(columns=self.columns, fill_value='')
+
+            # 写入前进行数据验证与清理，避免NaN等非法JSON值
+            df = self._validate_and_clean_data(df)
             
+            # 写入前归一化：按Priority排序并将Priority重排为1..N
+            df = self._normalize_priority_df(df)
+
             # 创建目录（如果不存在）
             os.makedirs(os.path.dirname(self.excel_file_path), exist_ok=True)
             
@@ -96,6 +105,25 @@ class OrganizerTableData:
         except Exception as e:
             logger.error(f"写入Excel文件失败: {str(e)}")
             return False
+
+    def _normalize_priority_df(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        根据Priority排序并将Priority重排为连续的1..N。
+
+        - 非数字或缺失Priority在清理阶段已转为0；此处统一参与排序。
+        - 排序后重置Priority为1..N，保证连续。
+        """
+        if 'Priority' in df.columns:
+            # 确保为数值类型，避免排序异常
+            df['Priority'] = pd.to_numeric(df['Priority'], errors='coerce').fillna(0).astype(int)
+            # 先按Priority升序排序，保持稳定性
+            df = df.sort_values(by=['Priority'], ascending=True, kind='stable').reset_index(drop=True)
+            # 重排Priority为1..N
+            df['Priority'] = range(1, len(df) + 1)
+        
+        # 维持列顺序
+        df = df.reindex(columns=self.columns, fill_value='')
+        return df
     
     def add_order(self, order_data: Dict[str, Any]) -> bool:
         """
@@ -108,14 +136,40 @@ class OrganizerTableData:
             bool: 添加是否成功
         """
         try:
-            # 读取现有数据
+            # 读取并归一化现有数据（确保优先级从1开始且连续）
             existing_data = self.read_excel_data()
+            total = len(existing_data)
+
+            # 期望插入的优先级位置（1..N+1），默认追加到末尾
+            try:
+                desired_priority = int(order_data.get('Priority', total + 1))
+            except Exception:
+                desired_priority = total + 1
+
+            if desired_priority < 1:
+                desired_priority = 1
+            if desired_priority > total + 1:
+                desired_priority = total + 1
+
+            # 根据位置插入：将该位置及之后的元素后移
+            # 先确保现有数据根据Priority排序（read_excel_data已处理），然后进行插入
+            insert_index = desired_priority - 1
+            new_list = []
+            # 前半部分保持不变
+            new_list.extend(existing_data[:insert_index])
+            # 插入新订单（临时设置Priority，稍后统一重排）
+            order_copy = dict(order_data)
+            order_copy['Priority'] = desired_priority
+            new_list.append(order_copy)
+            # 后半部分跟随其后
+            new_list.extend(existing_data[insert_index:])
+
+            # 统一重排Priority为1..N以保持连续
+            for idx, rec in enumerate(new_list, start=1):
+                rec['Priority'] = idx
             
-            # 添加新订单
-            existing_data.append(order_data)
-            
-            # 写回文件
-            return self.write_excel_data(existing_data)
+            # 写回文件（write_excel_data内也会执行归一化，保持稳定）
+            return self.write_excel_data(new_list)
             
         except Exception as e:
             logger.error(f"添加订单失败: {str(e)}")
@@ -206,6 +260,11 @@ class OrganizerTableData:
             if col in df.columns:
                 df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0)
         
+        # 处理文本列缺失值：确保返回JSON不包含NaN/None
+        text_columns = [col for col in df.columns if col not in numeric_columns + date_columns]
+        if text_columns:
+            df[text_columns] = df[text_columns].fillna('')
+
         # 不再保存进度列；若Excel中存在则读取但写出时会丢弃
         
         return df
