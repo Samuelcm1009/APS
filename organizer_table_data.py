@@ -231,6 +231,71 @@ class OrganizerTableData:
         except Exception as e:
             logger.error(f"删除订单失败: {str(e)}")
             return False
+
+    def delete_order_by_production_order(self, production_order: str) -> bool:
+        """
+        根据生产订单号删除对应订单（精确匹配，忽略前后空格）
+
+        Args:
+            production_order: 生产订单号
+
+        Returns:
+            bool: 删除是否成功
+        """
+        try:
+            target = str(production_order).strip()
+            existing_data = self.read_excel_data()
+
+            index_to_delete = None
+            for idx, rec in enumerate(existing_data):
+                val = str(rec.get('Production_order', '')).strip()
+                if val == target:
+                    index_to_delete = idx
+                    break
+
+            if index_to_delete is not None:
+                existing_data.pop(index_to_delete)
+                return self.write_excel_data(existing_data)
+            else:
+                logger.warning(f"未找到生产订单号: {target}")
+                return False
+        except Exception as e:
+            logger.error(f"按生产订单号删除订单失败: {str(e)}")
+            return False
+
+    def delete_orders_by_production_orders(self, production_orders: List[str]) -> Dict[str, Any]:
+        """
+        批量根据生产订单号删除订单（一次读取、一次写入，避免并发写入问题）
+
+        Args:
+            production_orders: 生产订单号列表
+
+        Returns:
+            Dict: { success, removed, requested }
+        """
+        try:
+            targets = {str(po).strip() for po in (production_orders or []) if str(po).strip()}
+            if not targets:
+                return {"success": False, "removed": 0, "requested": 0, "message": "空的订单号列表"}
+
+            existing_data = self.read_excel_data()
+            before_count = len(existing_data)
+
+            new_data = []
+            removed = 0
+            for rec in existing_data:
+                po = str(rec.get('Production_order', '')).strip()
+                if po in targets:
+                    removed += 1
+                else:
+                    new_data.append(rec)
+
+            write_ok = self.write_excel_data(new_data)
+            success = write_ok and removed > 0
+            return {"success": success, "removed": removed, "requested": len(targets)}
+        except Exception as e:
+            logger.error(f"批量按生产订单号删除订单失败: {str(e)}")
+            return {"success": False, "removed": 0, "requested": len(production_orders or [])}
     
     def _validate_and_clean_data(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -306,7 +371,7 @@ class OrganizerTableData:
         except Exception as e:
             logger.error(f"导入JSON失败: {str(e)}")
             return False
-    
+            
     def _get_timestamp(self) -> str:
         """获取当前时间戳"""
         return datetime.now().isoformat()
@@ -391,6 +456,60 @@ class OrganizerAPI:
                 "timestamp": datetime.now().isoformat()
             }
             
+        except Exception as e:
+            return {
+                "status": "error",
+                "message": str(e),
+                "timestamp": datetime.now().isoformat()
+            }
+
+    def delete_order_by_production_order(self, production_order: str) -> Dict[str, Any]:
+        """
+        处理按生产订单号删除的请求
+
+        Args:
+            production_order: 生产订单号
+
+        Returns:
+            Dict: 响应数据
+        """
+        try:
+            success = self.data_processor.delete_order_by_production_order(production_order)
+            message = "订单删除成功" if success else "未找到该生产订单或删除失败"
+            return {
+                "status": "success" if success else "error",
+                "message": message,
+                "success": success,
+                "timestamp": datetime.now().isoformat()
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "message": str(e),
+                "timestamp": datetime.now().isoformat()
+            }
+
+    def delete_orders_by_production_orders(self, production_orders: List[str]) -> Dict[str, Any]:
+        """
+        处理批量按生产订单号删除的请求
+
+        Args:
+            production_orders: 生产订单号列表
+
+        Returns:
+            Dict: 响应数据，包含删除数量
+        """
+        try:
+            result = self.data_processor.delete_orders_by_production_orders(production_orders)
+            message = f"成功删除 {result.get('removed', 0)} 个订单" if result.get('success') else "批量删除失败或未找到订单"
+            return {
+                "status": "success" if result.get('success') else "error",
+                "message": message,
+                "success": result.get('success', False),
+                "removed": result.get('removed', 0),
+                "requested": result.get('requested', 0),
+                "timestamp": datetime.now().isoformat()
+            }
         except Exception as e:
             return {
                 "status": "error",

@@ -14,7 +14,8 @@ body {
     min-height: 100vh;            /* 最小高度为视窗高度，确保全屏覆盖 */
     /* align-items: center;          垂直居中对齐 */
     justify-content: center;      /* 水平居中对齐 */
-    overflow: hidden;             /* 隐藏溢出内容，防止滚动条出现 */
+    overflow-y: auto;             /* 允许纵向滚动条在页面溢出时出现 */
+    overflow-x: hidden;           /* 禁止横向滚动条，保持视觉整洁 */
 }
 
 /* 网页头部 */

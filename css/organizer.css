@@ -238,21 +238,7 @@
     }
 }
 
-/* 表格动画效果 */
-.production-table tbody tr {
-    animation: fadeInRow 0.5s ease-in-out;
-}
-
-@keyframes fadeInRow {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+/* 表格动画效果（已移除上浮动画） */
 
 /* 滚动条样式（适用于Webkit浏览器） */
 .production-table-container::-webkit-scrollbar {
@@ -759,4 +745,73 @@
 
 .production-table tbody tr.clickable-row:active {
     background-color: rgba(33, 150, 243, 0.12);
+}
+
+/* 平滑刷新与加载遮罩 */
+.production-table-container {
+    position: relative;
+    transition: opacity 0.25s ease;
+    max-height: calc(100vh - 220px);
+    overflow-y: auto
+}
+
+.production-table-container.fade-out {
+    opacity: 0.3;
+}
+
+.production-table-container.fade-in {
+    opacity: 1;
+}
+
+.table-loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.production-table-container.loading .table-loading-overlay {
+    display: flex;
+}
+
+.table-loading-overlay .loader {
+    width: 36px;
+    height: 36px;
+    border: 3px solid #cccccc;
+    border-top-color: #2196F3;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 12px;
+}
+
+.table-loading-overlay .loading-text {
+    color: #ffffff;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 行插入与删除的过渡效果 */
+.production-table tbody tr.row-removing {
+    animation: fadeOutRow 0.25s ease forwards;
+}
+
+@keyframes fadeOutRow {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.production-table tbody tr.row-added {
+    animation: highlightRow 1.2s ease-out;
+}
+
+@keyframes highlightRow {
+    from { background-color: rgba(33, 150, 243, 0.18); }
+    to { background-color: transparent; }
 }

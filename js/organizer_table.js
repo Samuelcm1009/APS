@@ -1,5 +1,41 @@
-// 获取并显示订单数据
+// 获取并显示订单数据（加入平滑过渡与遮罩）
+let lastCreatedPO = null;
+
+function ensureTableOverlay() {
+    const container = document.querySelector('.production-table-container');
+    if (!container) return null;
+    let overlay = container.querySelector('.table-loading-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'table-loading-overlay';
+        overlay.innerHTML = '<div class="loader"></div><div class="loading-text">正在更新…</div>';
+        container.appendChild(overlay);
+    }
+    return container;
+}
+
+function startSmoothRefresh() {
+    const container = ensureTableOverlay();
+    if (!container) return;
+    container.classList.add('loading');
+    container.classList.add('fade-out');
+}
+
+function finishSmoothRefresh() {
+    const container = document.querySelector('.production-table-container');
+    if (!container) return;
+    // 移除加载与淡出，触发淡入过渡
+    container.classList.remove('fade-out');
+    container.classList.add('fade-in');
+    container.classList.remove('loading');
+    // 在过渡结束后清理类
+    setTimeout(() => {
+        container.classList.remove('fade-in');
+    }, 250);
+}
+
 function fetchAndDisplayOrders() {
+    startSmoothRefresh();
     fetch('http://localhost:5000/api/orders')
         .then(response => {
             if (!response.ok) {
@@ -16,6 +52,9 @@ function fetchAndDisplayOrders() {
         })
         .catch(error => {
             console.error('Error fetching or processing orders:', error);
+        })
+        .finally(() => {
+            finishSmoothRefresh();
         });
 }
 
@@ -48,7 +87,7 @@ function renderTable(orders) {
 
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td class="col-checkbox"><input type="checkbox" class="row-checkbox"></td>
+            <td class="col-checkbox"><input type="checkbox" class="row-checkbox" data-production-order="${(order.Production_order || '').toString().trim()}"></td>
             <td>${order.Priority}</td>
             <td><span class="status-indicator ${statusClass}"></span> ${statusText}</td>
             <td>${order.Production_order}</td>
@@ -67,6 +106,19 @@ function renderTable(orders) {
 
     // 数据渲染完成后重新初始化复选框功能
     initTableCheckboxes();
+
+    // 如果刚新增了订单，渲染后为对应行添加高亮
+    if (lastCreatedPO) {
+        const sel = `.row-checkbox[data-production-order="${CSS.escape(lastCreatedPO)}"]`;
+        const cb = tableBody.querySelector(sel);
+        const row = cb ? cb.closest('tr') : null;
+        if (row) {
+            row.classList.add('row-added');
+            // 自动滚动到新行附近
+            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        lastCreatedPO = null;
+    }
 }
 
 // 表格复选框功能
@@ -147,6 +199,86 @@ function getSelectedRows() {
     });
     
     return selectedRows;
+}
+
+// 获取选中的Production Order编号
+function getSelectedProductionOrders() {
+    const productionOrders = [];
+    const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+    checkedBoxes.forEach(cb => {
+        // 优先使用复选框上的 data-production-order
+        let po = cb.dataset?.productionOrder || cb.getAttribute('data-production-order') || '';
+        po = (po || '').trim();
+        if (!po) {
+            // 兜底：从该行的第4个单元格读取文本（Production order列）
+            const row = cb.closest('tr');
+            const cell = row ? row.querySelector('td:nth-child(4)') : null;
+            const text = (cell?.textContent || '').trim();
+            if (text) po = text;
+        }
+        if (po) productionOrders.push(po);
+    });
+    return productionOrders;
+}
+
+// 绑定删除按钮逻辑
+function initDeleteButton() {
+    const deleteBtn = document.querySelector('.btn.btn-delete');
+    if (!deleteBtn) return;
+
+    deleteBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+        if (!checkedBoxes.length) {
+            alert('未勾选复选框');
+            return;
+        }
+
+        const selectedPOs = getSelectedProductionOrders();
+
+        if (!selectedPOs.length) {
+            alert('选中的行缺少生产订单号，无法删除');
+            return;
+        }
+
+        const message = `确定删除选中的 ${selectedPOs.length} 个订单？\n\n` + selectedPOs.join('\n');
+        const confirmed = window.confirm(message);
+        if (!confirmed) return;
+
+        // 禁用按钮，防止重复点击
+        deleteBtn.disabled = true;
+        try {
+            // 使用后端批量删除接口，一次请求完成
+            const resp = await fetch('http://localhost:5000/api/orders/by-production/batch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ production_orders: selectedPOs })
+            });
+            const data = await resp.json().catch(() => ({}));
+            if (resp.ok && data.success) {
+                const removed = Number(data.removed) || selectedPOs.length;
+                alert(`成功删除 ${removed} 个订单`);
+                // 先对当前选中行做轻量淡出，然后刷新
+                const rows = getSelectedRows();
+                rows.forEach(r => r.classList.add('row-removing'));
+                setTimeout(() => {
+                    rows.forEach(r => r.remove());
+                    fetchAndDisplayOrders();
+                }, 250);
+            } else {
+                const msg = data.message || '批量删除失败';
+                alert(msg);
+                // 删除失败也刷新以确保视图与服务器一致
+                fetchAndDisplayOrders();
+            }
+        } catch (err) {
+            console.error('删除订单过程中出现错误:', err);
+            alert('删除过程中出现错误，请稍后重试');
+            fetchAndDisplayOrders();
+        } finally {
+            deleteBtn.disabled = false;
+        }
+    });
 }
 
 // 初始化“建立新生产订单”模态框交互与提交
@@ -231,6 +363,8 @@ function initNewOrderModal() {
 
                 // 成功：关闭模态框并刷新表格
                 hideModal();
+                // 记录刚创建的订单编号，用于渲染后高亮
+                lastCreatedPO = productionOrder;
                 fetchAndDisplayOrders();
             } catch (err) {
                 console.error('创建订单错误:', err);
@@ -246,4 +380,6 @@ function initNewOrderModal() {
 document.addEventListener('DOMContentLoaded', function() {
     fetchAndDisplayOrders();
     initNewOrderModal();
+    initDeleteButton();
 });
+

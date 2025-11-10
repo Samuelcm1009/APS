@@ -144,6 +144,49 @@ def delete_order(order_index):
         }), 500
 
 
+# 新增：按生产订单号删除
+@app.route('/api/orders/by-production/<string:production_order>', methods=['DELETE'])
+def delete_order_by_production(production_order: str):
+    """根据生产订单号删除对应订单"""
+    try:
+        response = api_handler.delete_order_by_production_order(production_order)
+
+        return jsonify(response), 200 if response.get('success') else 400
+    except Exception as e:
+        logger.error(f"按生产订单号删除订单失败: {str(e)}")
+        return jsonify({
+            "status": "error",
+            "message": str(e),
+            "timestamp": data_processor._get_timestamp()
+        }), 500
+
+
+# 新增：批量按生产订单号删除
+@app.route('/api/orders/by-production/batch', methods=['POST'])
+def batch_delete_orders_by_production():
+    """批量删除生产订单：一次读写，避免并发写入冲突"""
+    try:
+        payload = request.get_json(force=True) or {}
+        production_orders = payload.get('production_orders') or payload.get('orders') or payload.get('ids')
+        if not isinstance(production_orders, list):
+            return jsonify({
+                "status": "error",
+                "message": "请求体需包含 production_orders 列表",
+                "success": False,
+                "timestamp": data_processor._get_timestamp()
+            }), 400
+
+        response = api_handler.delete_orders_by_production_orders(production_orders)
+        return jsonify(response), 200 if response.get('success') else 400
+    except Exception as e:
+        logger.error(f"批量按生产订单号删除订单失败: {str(e)}")
+        return jsonify({
+            "status": "error",
+            "message": str(e),
+            "timestamp": data_processor._get_timestamp()
+        }), 500
+
+
 @app.route('/api/orders/export', methods=['GET'])
 def export_orders():
     """导出订单数据为JSON格式"""
@@ -270,6 +313,7 @@ def internal_error(error):
     }), 500
 
 
+
 if __name__ == '__main__':
     print("启动生产订单数据API服务器...")
     print("API端点:")
@@ -278,6 +322,7 @@ if __name__ == '__main__':
     print("  POST /api/orders      - 创建新订单")
     print("  PUT  /api/orders/<id> - 更新订单")
     print("  DELETE /api/orders/<id> - 删除订单")
+    print("  DELETE /api/orders/by-production/<Production_order> - 按订单号删除订单")
     print("  GET  /api/orders/export - 导出订单")
     print("  POST /api/orders/import - 导入订单")
     print("  POST /api/orders/upload - 上传文件")
